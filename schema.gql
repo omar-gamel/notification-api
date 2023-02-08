@@ -1,0 +1,146 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Notification {
+  id: ID!
+  type: NotificationTypeEnum!
+  thumbnail: String
+  enTitle: String!
+  arTitle: String!
+  enBody: String!
+  arBody: String!
+  createdAt: Timestamp!
+  updatedAt: Timestamp!
+  localeTitle: String
+  localeBody: String
+}
+
+enum NotificationTypeEnum {
+  PUBLIC
+  NEW_CONTACT_MESSAGE
+}
+
+type NotificationManager {
+  VIA_PUSH: Boolean!
+}
+
+type User {
+  id: ID!
+  firstName: String!
+  lastName: String
+  fullName: String
+  slug: String!
+  phone: String
+  profilePicture: String
+  isBlocked: Boolean!
+  favLang: LangEnum!
+  notificationManager: NotificationManager!
+  token: String
+}
+
+enum LangEnum {
+  EN
+  AR
+}
+
+type GqlUserResponse {
+  data: User
+  code: Int!
+  success: Boolean!
+  message: String
+}
+
+type GqlUsersPagination {
+  items: [User]
+}
+
+type GqlBooleanResponse {
+  data: Boolean
+  code: Int!
+  success: Boolean!
+  message: String
+}
+
+type GqlNotificationResponse {
+  data: Notification
+  code: Int!
+  success: Boolean!
+  message: String
+}
+
+type GqlNotificationsPagination {
+  items: [Notification]
+}
+
+type GqlNotificationsResponse {
+  data: GqlNotificationsPagination
+  code: Int!
+  success: Boolean!
+  message: String
+}
+
+scalar Timestamp
+
+scalar JSON
+
+type Query {
+  notifications(filter: FilterNotificationsInput, paginate: PaginatorInput): GqlNotificationsResponse!
+  notification(notificationId: String!): GqlNotificationResponse!
+  setNotificationsInSeenStatus(input: SetNotificationsInSeenStatusInput!): GqlBooleanResponse!
+}
+
+input FilterNotificationsInput {
+  searchKey: String
+}
+
+input PaginatorInput {
+  page: Float! = 1
+  limit: Float! = 15
+}
+
+input SetNotificationsInSeenStatusInput {
+  notificationIds: [String!]!
+}
+
+type Mutation {
+  createTestUser: GqlUserResponse!
+  sendNotificationBoard(input: SendNotificationBoardInput!): GqlBooleanResponse!
+  deleteNotification(notificationId: String!): GqlBooleanResponse!
+  deleteNotifications: GqlBooleanResponse!
+  managePatientNotifications(input: ManagePatientNotificationsInput!): GqlUserResponse!
+  manageDoctorNotifications(input: ManageDoctorNotificationsInput!): GqlUserResponse!
+}
+
+input SendNotificationBoardInput {
+  usersIds: [String]
+  enTitle: String!
+  arTitle: String!
+  enBody: String!
+  arBody: String!
+  userType: SendNotificationBoardTypeEnum!
+}
+
+enum SendNotificationBoardTypeEnum {
+  ALL_USERS
+  SPECIFIC_USERS
+}
+
+input ManagePatientNotificationsInput {
+  VIA_PUSH: Boolean
+  WHEN_APPOINTMENT_VISIT_SUMMARY_ADDED: Boolean
+  WHEN_APPOINTMENT_PRESCRIPTIONS_ADDED: Boolean
+  WHEN_APPOINTMENT_SICK_LEAVE_ADDED: Boolean
+  WHEN_SCHEDULED_APPOINTMENT_ALARM: Boolean
+  WHEN_APPOINTMENT_REPLIED: Boolean
+}
+
+input ManageDoctorNotificationsInput {
+  VIA_PUSH: Boolean
+  WHEN_SCHEDULED_APPOINTMENT_ALARM: Boolean
+  WHEN_APPOINTMENT_CANCELED: Boolean
+  WHEN_APPOINTMENT_NEED_SUMMARY: Boolean
+  WHEN_APPOINTMENT_REVIEWED: Boolean
+  WHEN_NEW_APPOINTMENT: Boolean
+  WHEN_APPOINTMENT_INCOME_ADDED_TO_DOCTOR_WALLET: Boolean
+}
